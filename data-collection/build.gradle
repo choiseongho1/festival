@@ -46,9 +46,11 @@ dependencies {
 
     // Jackson 데이터 바인딩을 위한 의존성 (필수)
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-
-    // Jackson을 통한 XML 파싱을 위한 의존성
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+
+    // 20241018
+    // MySQL Connector 추가
+    implementation 'mysql:mysql-connector-java:8.0.33'
 
 }
 

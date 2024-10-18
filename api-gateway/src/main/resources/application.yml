@@ -1,0 +1,38 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: api-gateway
+
+
+  cloud:
+    config:
+      enabled: false  # Spring Cloud Config ???? ??
+    gateway:
+      routes:
+        - id: data-collection
+          uri: http://data-collection:8080
+          predicates:
+            - Path=/data-collection/**
+        - id: data-storage
+          uri: http://data-storage:8081
+          predicates:
+            - Path=/data-storage/**
+        - id: api
+          uri: http://api:8082
+          predicates:
+            - Path=/api/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+

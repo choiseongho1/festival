@@ -2,32 +2,59 @@ version: '3.8'
 
 services:
   elasticsearch:
+    # Elasticsearch 서비스 정의
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
     container_name: elasticsearch
     environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - discovery.type=single-node # 단일 노드 모드로 실행
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m # JVM 메모리 설정
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9200:9200" # HTTP 연결 포트
+      - "9300:9300" # 클러스터 노드 간 통신 포트
     networks:
-      - app-network
+      - app-network # app-network 네트워크에 연결
 
   data-collection:
+    # 데이터 수집 서비스 정의
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: . # 현재 디렉토리에서 도커 이미지를 빌드
+      dockerfile: Dockerfile # 사용할 Dockerfile 지정
     container_name: data-collection
     depends_on:
-      - elasticsearch
+      - elasticsearch # Elasticsearch 서비스가 먼저 시작되도록 설정
     ports:
-      - "8080:8080"
+      - "8080:8080" # 애플리케이션 포트 매핑
     environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - SPRING_PROFILES_ACTIVE=local # Spring 프로파일 설정
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200 # Elasticsearch 호스트 URL 설정
+      - MYSQL_HOST=mysql             # **MySQL 연결 정보 추가**
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=festival_db
+      - MYSQL_USER=festival_user
+      - MYSQL_PASSWORD=festival_password
+    networks:
+      - app-network # app-network 네트워크에 연결
+
+  # **MySQL 서비스 추가**
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password  # 루트 사용자의 비밀번호 설정
+      MYSQL_DATABASE: festival_db         # 생성할 데이터베이스 이름
+      MYSQL_USER: festival_user           # 사용할 사용자 이름
+      MYSQL_PASSWORD: festival_password   # 사용자의 비밀번호
+    ports:
+      - "3306:3306"  # 호스트의 3306 포트를 컨테이너의 3306 포트에 매핑
     networks:
       - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql  # MySQL 데이터를 영구적으로 저장
 
 networks:
   app-network:
-    driver: bridge
+    driver: bridge # 서비스 간의 통신을 위한 브리지 네트워크
+
+volumes:
+  mysql-data:  # **MySQL 데이터를 영구적으로 저장하기 위한 볼륨 추가**
+    driver: local
