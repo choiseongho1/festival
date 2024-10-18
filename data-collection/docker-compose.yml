@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - app-network
+
+  data-collection:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data-collection
+    depends_on:
+      - elasticsearch
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
