@@ -27,17 +27,18 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=local # Spring 프로파일 설정
       - ELASTICSEARCH_HOST=http://elasticsearch:9200 # Elasticsearch 호스트 URL 설정
-      - MYSQL_HOST=mysql             # **MySQL 연결 정보 추가**
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=festival_db
-      - MYSQL_USER=festival_user
-      - MYSQL_PASSWORD=festival_password
+      - MYSQL_HOST=mysql             # MySQL 서비스의 호스트 이름 설정
+      - MYSQL_PORT=3306              # MySQL 서비스의 포트 설정
+      - MYSQL_DATABASE=festival_db   # MySQL 데이터베이스 이름 설정
+      - MYSQL_USER=festival_user     # MySQL 사용자 이름 설정
+      - MYSQL_PASSWORD=festival_password # MySQL 사용자 비밀번호 설정
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://host.docker.internal:8761/eureka/ # 로컬 Eureka 서버 URL 설정
     networks:
       - app-network # app-network 네트워크에 연결
 
-  # **MySQL 서비스 추가**
   mysql:
-    image: mysql:8.0
+    # MySQL 서비스 정의
+    image: mysql:8.0 # 사용할 MySQL 이미지
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root_password  # 루트 사용자의 비밀번호 설정
@@ -47,7 +48,7 @@ services:
     ports:
       - "3306:3306"  # 호스트의 3306 포트를 컨테이너의 3306 포트에 매핑
     networks:
-      - app-network
+      - app-network # app-network 네트워크에 연결
     volumes:
       - mysql-data:/var/lib/mysql  # MySQL 데이터를 영구적으로 저장
 
@@ -56,5 +57,5 @@ networks:
     driver: bridge # 서비스 간의 통신을 위한 브리지 네트워크
 
 volumes:
-  mysql-data:  # **MySQL 데이터를 영구적으로 저장하기 위한 볼륨 추가**
+  mysql-data:  # MySQL 데이터를 영구적으로 저장하기 위한 볼륨 정의
     driver: local

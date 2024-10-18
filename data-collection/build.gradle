@@ -33,9 +33,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // 20241017
-    //jpa 추가
+    // JPA 추가
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // Junit 추가
+    // JUnit 추가
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.assertj:assertj-core:3.23.1'
     // 테스트 H2
@@ -52,6 +52,15 @@ dependencies {
     // MySQL Connector 추가
     implementation 'mysql:mysql-connector-java:8.0.33'
 
+    // 20241018
+    // Eureka Client 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3" // Spring Cloud Kilburn 버전
+    }
 }
 
 tasks.named('test') {

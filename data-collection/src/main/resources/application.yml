@@ -1,4 +1,10 @@
+server:
+  port: 8080
+
 spring:
+  application:
+    name: data-collection
+
   datasource:
     url: jdbc:mysql://mysql:3306/festival_db  # Docker MySQL 컨테이너에 연결
     username: festival_user                   # MySQL 사용자 이름
@@ -12,12 +18,21 @@ spring:
         format_sql: true
         show_sql: true  # SQL 쿼리를 로그에 출력하여 디버깅에 도움
 
-docker:
-  mysql:
-    root-password: root_password
-    database: festival_db
-    username: festival_user
-    password: festival_password
+  profiles:
+    active: local
+
+elasticsearch:
+  host: http://elasticsearch:9200 # Elasticsearch 호스트 URL 설정
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://172.20.10.4:8761/eureka/  # 로컬 IP 주소 사용
 
 logging:
   level:

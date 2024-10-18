@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   eureka-server:
-    image: eurekaserver-image  # 사용할 이미지 이름 (필요시 빌드 설정을 추가해야 함)
+    build:
+      context: ./eureka-server  # Eureka 서버 Dockerfile 위치
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -14,10 +15,9 @@ services:
       - EUREKA_SERVER_ENABLE_SELF_PRESERVATION=false
 
   api-gateway:
-    image: apigateway-image  # 사용할 이미지 이름 (필요시 빌드 설정을 추가해야 함)
-    container_name: api-gateway
     build:
       context: ./api-gateway  # API Gateway Dockerfile 위치
+    container_name: api-gateway
     ports:
       - "8000:8000"
     networks:

@@ -1,38 +1,21 @@
 server:
-  port: 8000
+  port: 9001
 
 spring:
   application:
     name: api-gateway
-
-
   cloud:
-    config:
-      enabled: false  # Spring Cloud Config ???? ??
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
-        - id: data-collection
-          uri: http://data-collection:8080
+        - id: data-collection-service
+          uri: lb://data-collection-service
           predicates:
-            - Path=/data-collection/**
-        - id: data-storage
-          uri: http://data-storage:8081
-          predicates:
-            - Path=/data-storage/**
-        - id: api
-          uri: http://api:8082
-          predicates:
-            - Path=/api/**
+            - Path=/api/collection/**
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-
+      defaultZone: http://localhost:8761/eureka
