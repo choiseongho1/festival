@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @SpringBootApplication
+@EnableScheduling
 public class DataCollectionApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataCollectionApplication.class, args);
