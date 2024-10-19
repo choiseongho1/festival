@@ -1,5 +1,6 @@
 package com.festival.datacollection;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableBatchProcessing
 public class DataCollectionApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataCollectionApplication.class, args);
