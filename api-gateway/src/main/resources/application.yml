@@ -2,29 +2,37 @@ server:
   port: 8000
 
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
-  instance:
-    prefer-ip-address: true
+
 
 spring:
   application:
     name: api-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
-        - id: data-collection-service
+        - id: data-collection-route
           uri: lb://DATA-COLLECTION
           predicates:
             - Path=/api/data-collection/**
-        - id: api-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/**
 
 logging:
   level:
+    #   eureka등록 로그 메세지 확인을 위한 logging level DEBUG
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.netflix.eureka : DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

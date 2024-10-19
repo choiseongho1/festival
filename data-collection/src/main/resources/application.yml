@@ -40,4 +40,8 @@ logging:
       springframework:
         jdbc: DEBUG
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

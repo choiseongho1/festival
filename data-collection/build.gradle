@@ -55,6 +55,11 @@ dependencies {
     // 20241018
     // Eureka Client 추가
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // 20241019
+    // actuator 추가
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 }
 
 dependencyManagement {
