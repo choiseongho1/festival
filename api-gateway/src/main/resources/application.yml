@@ -1,21 +1,30 @@
 server:
-  port: 9001
+  port: 8000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
 
 spring:
   application:
     name: api-gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: data-collection-service
-          uri: lb://data-collection-service
+          uri: lb://DATA-COLLECTION
           predicates:
-            - Path=/api/collection/**
+            - Path=/api/data-collection/**
+        - id: api-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

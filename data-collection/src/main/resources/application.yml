@@ -6,23 +6,23 @@ spring:
     name: data-collection
 
   datasource:
-    url: jdbc:mysql://mysql:3306/festival_db  # Docker MySQL 컨테이너에 연결
-    username: festival_user                   # MySQL 사용자 이름
-    password: festival_password               # MySQL 사용자 비밀번호
+    url: jdbc:mysql://localhost:3306/festival_db
+    username: festival_user
+    password: festival_password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update  # 필요에 따라 설정, 개발 시에는 'update', 프로덕션에서는 'validate' 등으로 설정
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        show_sql: true  # SQL 쿼리를 로그에 출력하여 디버깅에 도움
+        show_sql: true
 
   profiles:
     active: local
 
 elasticsearch:
-  host: http://elasticsearch:9200 # Elasticsearch 호스트 URL 설정
+  host: http://localhost:9200
 
 eureka:
   instance:
@@ -32,10 +32,12 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://172.20.10.4:8761/eureka/  # 로컬 IP 주소 사용
+      defaultZone: http://localhost:8761/eureka
 
 logging:
   level:
     org:
       springframework:
-        jdbc: DEBUG  # JDBC 연결 로그를 확인하고자 할 때 사용 (선택사항)
+        jdbc: DEBUG
+
+
