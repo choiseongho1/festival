@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: data-collection
+  main:
+    allow-bean-definition-overriding: true
+
 
   datasource:
     url: jdbc:mysql://localhost:3306/festival_db
