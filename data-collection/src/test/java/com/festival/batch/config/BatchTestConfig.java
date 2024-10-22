@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBatchTest
 @TestConfiguration
-@Import(BatchJobConfig.class) // 실제 Batch 설정 파일을 가져옵니다.
+//@Import(BatchJobConfig.class) // 실제 Batch 설정 파일을 가져옵니다.
 public class BatchTestConfig {
 
     @Bean
