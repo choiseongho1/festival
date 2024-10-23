@@ -25,6 +25,10 @@ spring:
           uri: lb://DATA-COLLECTION
           predicates:
             - Path=/api/data-collection/**
+        - id: user-service-route
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/user/**
 
 logging:
   level:
