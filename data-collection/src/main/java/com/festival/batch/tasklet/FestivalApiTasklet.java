@@ -38,6 +38,8 @@ public class FestivalApiTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+
+        System.out.println("----------------> 배치 호출 시작");
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(15);
         LocalDate endDate = today.plusDays(15);
@@ -49,6 +51,8 @@ public class FestivalApiTasklet implements Tasklet {
                     fetchFestivalDataAsync(targetDate.format(FORMATTER));
                 });
 
+        System.out.println("-------------> 배치 호출 종료");
+
         return RepeatStatus.FINISHED;
     }
 
@@ -57,6 +61,7 @@ public class FestivalApiTasklet implements Tasklet {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
+        System.out.println("---------------> 일자 : " + eventStartDate);
         String url = TOURISM_API_URL + "?"
                 + "MobileOS=WIN"
                 + "&MobileApp=TEST"
@@ -97,7 +102,7 @@ public class FestivalApiTasklet implements Tasklet {
 
                             Festival festival = festivalDto.toEntity();
                             festivalRepository.save(festival);
-                            logger.info("축제 정보 저장 완료: {}", festival.getTitle());
+//                            logger.info("축제 정보 저장 완료: {}", festival.getTitle());
                         }
                     }
 

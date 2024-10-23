@@ -6,6 +6,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,15 +29,14 @@ public class FestivalJob {
         this.transactionManager = transactionManager;
         this.festivalApiTasklet = festivalApiTasklet;
     }
-
-    @Bean
-    public Job festivalJob() {
+    @Bean(name = "festivalJobBean")
+    public Job festivalJob(@Qualifier("festivalStepBean") Step festivalStep) {  // Step을 생성자에서 주입
         return new JobBuilder("festivalJob", jobRepository)
-                .start(festivalStep())
+                .start(festivalStep)
                 .build();
     }
 
-    @Bean
+    @Bean(name = "festivalStepBean")
     public Step festivalStep() {
         return new StepBuilder("festivalStep", jobRepository)
                 .tasklet(festivalApiTasklet, transactionManager)

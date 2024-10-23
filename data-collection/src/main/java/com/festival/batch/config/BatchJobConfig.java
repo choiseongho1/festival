@@ -23,31 +23,29 @@ import org.springframework.transaction.PlatformTransactionManager;
  * 배치 작업과 스케줄링을 활성화합니다.
  */
 @Configuration
-@EnableBatchProcessing
-@EnableScheduling
 public class BatchJobConfig {
+
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final FestivalRepository festivalRepository;
-    public BatchJobConfig(JobRepository jobRepository, PlatformTransactionManager transactionManager, FestivalRepository festivalRepository) {
+    private final Tasklet festivalApiTasklet;
+
+    public BatchJobConfig(JobRepository jobRepository, PlatformTransactionManager transactionManager, Tasklet festivalApiTasklet) {
         this.jobRepository = jobRepository;
         this.transactionManager = transactionManager;
-        this.festivalRepository = festivalRepository;
+        this.festivalApiTasklet = festivalApiTasklet;
     }
-    @Bean
+
+    @Bean(name = "festivalJobBean")  // festivalJobBean으로 명시적으로 빈 이름 지정
     public Job festivalJob() {
         return new JobBuilder("festivalJob", jobRepository)
                 .start(festivalStep())
                 .build();
     }
+
     @Bean
     public Step festivalStep() {
         return new StepBuilder("festivalStep", jobRepository)
-                .tasklet(festivalApiTasklet(), transactionManager)
+                .tasklet(festivalApiTasklet, transactionManager)
                 .build();
-    }
-    @Bean
-    public FestivalApiTasklet festivalApiTasklet() {
-        return new FestivalApiTasklet(festivalRepository);
     }
 }
