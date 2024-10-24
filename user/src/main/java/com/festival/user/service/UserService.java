@@ -1,6 +1,7 @@
 package com.festival.user.service;
 
 import com.festival.user.domain.User;
+import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,22 @@ public class UserService {
         // 엔티티로 변환하여 저장
         User saveUser = userRepository.save(userSaveDto.toEntity());
         return saveUser;
+    }
+
+    // 로그인 로직
+    public String loginUser(UserLoginDto userLoginDto) {
+        // 사용자 조회
+        User user = userRepository.findByUsername(userLoginDto.getUsername());
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        // 비밀번호 검증
+        if (!passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        // 로그인 성공 시 메시지 반환
+        return "Login successful!";
     }
 }
