@@ -35,4 +35,32 @@ public class UserRepositoryTest {
         assertThat(opUser).isPresent();
         assertThat(opUser.get().getUsername()).isEqualTo("testuser");
     }
+
+    @Test
+    void findByUsername_존재하는사용자_사용자반환() {
+        // given
+        String username = "testUser";
+        User user = new User();
+        user.setUsername(username);
+        userRepository.save(user);
+
+        // when
+        User foundUser = userRepository.findByUsername(username);
+
+        // then
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getUsername()).isEqualTo(username);
+    }
+
+    @Test
+    void findByUsername_존재하지않는사용자_null반환() {
+        // given
+        String nonExistentUsername = "nonExistentUser";
+
+        // when
+        User foundUser = userRepository.findByUsername(nonExistentUsername);
+
+        // then
+        assertThat(foundUser).isNull();
+    }
 }
