@@ -22,7 +22,9 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(userSaveDto.getInputPassword());
 
         // 사용자 중복 체크
-        if (userRepository.findByUsername(userSaveDto.getUsername()) != null) {
+        User findUser = userRepository.findByUsername(userSaveDto.getUsername());
+
+        if (findUser != null) {
             // TODO Exception Handler 추가하여 변경 필요
             throw new RuntimeException();
         }
