@@ -1,6 +1,7 @@
 package com.festival.user.service;
 
 import com.festival.user.domain.User;
+import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,6 +104,73 @@ class UserServiceTest {
 
         // 6. userRepository.save()가 호출되지 않았는지 확인
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testLoginUser_Success() {
+        // 1. 가짜 데이터 준비
+        String rawPassword = "password";
+        User user = User.builder()
+                .username("testuser")
+                .password(passwordEncoder.encode(rawPassword))  // 암호화된 비밀번호
+                .fullName("Test User")
+                .phoneNumber("123-456-7890")
+                .phoneVerified(false)
+                .build();
+
+        // 2. Mock 설정
+        when(userRepository.findByUsername("testuser")).thenReturn(user);
+
+        // 3. 테스트 수행
+        UserLoginDto loginDto = UserLoginDto.builder()
+                .username(user.getUsername())
+                .inputPassword(rawPassword)
+                .build();
+
+        String result = userService.loginUser(loginDto);
+
+        // 4. 검증
+        assertEquals("Login successful!", result);
+    }
+
+    @Test
+    public void testLoginUser_UserNotFound() {
+        // 사용자 조회 Mock 설정 (사용자 없음)
+        when(userRepository.findByUsername("testuser")).thenReturn(null);
+
+        // 예외 발생 테스트
+        assertThrows(RuntimeException.class, () -> {
+            UserLoginDto loginDto = UserLoginDto.builder()
+                    .username("testuser")
+                    .inputPassword("password")
+                    .build();
+            userService.loginUser(loginDto);
+        });
+    }
+
+    @Test
+    public void testLoginUser_InvalidPassword() {
+        // 1. 가짜 사용자 데이터 준비
+        User user = User.builder()
+                .username("testuser")
+                .password(passwordEncoder.encode("correctpassword"))  // 올바른 비밀번호
+                .fullName("Test User")
+                .phoneNumber("123-456-7890")
+                .phoneVerified(false)
+                .build();
+
+        // 2. 사용자 조회 Mock 설정
+        when(userRepository.findByUsername("testuser")).thenReturn(user);
+
+        // 3. 잘못된 비밀번호로 로그인 시도
+        assertThrows(RuntimeException.class, () -> {
+            UserLoginDto loginDto = UserLoginDto.builder()
+                    .username("testuser")
+                    .inputPassword("wrongpassword")
+                    .build();
+
+            userService.loginUser(loginDto);
+        });
     }
 
 }
