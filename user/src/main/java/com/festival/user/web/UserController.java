@@ -12,4 +12,6 @@ public class UserController {
     public String healthCheck() {
         return "User Server is running successfully";
     }
+
+
 }
