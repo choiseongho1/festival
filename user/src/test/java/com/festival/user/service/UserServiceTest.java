@@ -1,5 +1,6 @@
 package com.festival.user.service;
 
+import com.festival.user.common.util.JwtUtil;
 import com.festival.user.domain.User;
 import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
@@ -25,6 +26,9 @@ class UserServiceTest {
     private UserRepository userRepository;  // Mock 객체
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Mock
+    private JwtUtil jwtUtil; // Jwt Util
 
     @BeforeEach
     public void setUp() {
@@ -110,9 +114,11 @@ class UserServiceTest {
     public void testLoginUser_Success() {
         // 1. 가짜 데이터 준비
         String rawPassword = "password";
+        String expectedToken = "jwt_token";
+
         User user = User.builder()
                 .username("testuser")
-                .password(passwordEncoder.encode(rawPassword))  // 암호화된 비밀번호
+                .password(passwordEncoder.encode(rawPassword))
                 .fullName("Test User")
                 .phoneNumber("123-456-7890")
                 .phoneVerified(false)
@@ -120,25 +126,26 @@ class UserServiceTest {
 
         // 2. Mock 설정
         when(userRepository.findByUsername("testuser")).thenReturn(user);
+        when(jwtUtil.generateToken("testuser")).thenReturn(expectedToken);
 
         // 3. 테스트 수행
         UserLoginDto loginDto = UserLoginDto.builder()
-                .username(user.getUsername())
+                .username("testuser")
                 .inputPassword(rawPassword)
                 .build();
 
         String result = userService.loginUser(loginDto);
 
         // 4. 검증
-        assertEquals("Login successful!", result);
+        assertEquals(expectedToken, result);
     }
 
     @Test
     public void testLoginUser_UserNotFound() {
-        // 사용자 조회 Mock 설정 (사용자 없음)
+        // 1. Mock 설정 - 사용자 조회 결과가 null로 설정
         when(userRepository.findByUsername("testuser")).thenReturn(null);
 
-        // 예외 발생 테스트
+        // 2. 예외 발생 테스트 - RuntimeException이 발생하는지 확인
         assertThrows(RuntimeException.class, () -> {
             UserLoginDto loginDto = UserLoginDto.builder()
                     .username("testuser")
@@ -150,25 +157,24 @@ class UserServiceTest {
 
     @Test
     public void testLoginUser_InvalidPassword() {
-        // 1. 가짜 사용자 데이터 준비
+        // 1. 가짜 사용자 데이터 준비 - 올바른 비밀번호로 설정
         User user = User.builder()
                 .username("testuser")
-                .password(passwordEncoder.encode("correctpassword"))  // 올바른 비밀번호
+                .password(passwordEncoder.encode("correctpassword"))
                 .fullName("Test User")
                 .phoneNumber("123-456-7890")
                 .phoneVerified(false)
                 .build();
 
-        // 2. 사용자 조회 Mock 설정
+        // 2. Mock 설정 - 사용자 조회 결과 반환
         when(userRepository.findByUsername("testuser")).thenReturn(user);
 
-        // 3. 잘못된 비밀번호로 로그인 시도
+        // 3. 예외 발생 테스트 - 잘못된 비밀번호 입력 시 RuntimeException 발생 확인
         assertThrows(RuntimeException.class, () -> {
             UserLoginDto loginDto = UserLoginDto.builder()
                     .username("testuser")
                     .inputPassword("wrongpassword")
                     .build();
-
             userService.loginUser(loginDto);
         });
     }

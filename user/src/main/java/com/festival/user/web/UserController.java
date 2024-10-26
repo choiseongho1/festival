@@ -5,6 +5,7 @@ import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +28,8 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public String loginUser(@RequestBody UserLoginDto userLoginDto) {
-        return userService.loginUser(userLoginDto);
+    public ResponseEntity<?>  loginUser(@RequestBody UserLoginDto userLoginDto) {
+        String token = userService.loginUser(userLoginDto);
+        return ResponseEntity.ok(token); // JWT 토큰을 클라이언트에 반환
     }
 }

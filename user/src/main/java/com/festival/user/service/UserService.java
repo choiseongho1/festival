@@ -1,10 +1,12 @@
 package com.festival.user.service;
 
+import com.festival.user.common.util.JwtUtil;
 import com.festival.user.domain.User;
 import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
+    // 사용자 레포지토리
     private final UserRepository userRepository;
 
+    // 비밀번호 인코더
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    // JWT 관련 Util
+    private final JwtUtil jwtUtil;
+
 
     // 회원가입 로직
     public User registerUser(UserSaveDto userSaveDto) {
@@ -37,20 +45,12 @@ public class UserService {
         return saveUser;
     }
 
-    // 로그인 로직
+    // 사용자 로그인
     public String loginUser(UserLoginDto userLoginDto) {
-        // 사용자 조회
         User user = userRepository.findByUsername(userLoginDto.getUsername());
-        if (user == null) {
-            throw new RuntimeException("User not found");
+        if (user == null || !passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid username or password");
         }
-
-        // 비밀번호 검증
-        if (!passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // 로그인 성공 시 메시지 반환
-        return "Login successful!";
+        return jwtUtil.generateToken(userLoginDto.getUsername());  // JWT 토큰 생성
     }
 }
