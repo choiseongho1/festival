@@ -20,15 +20,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         final String authorizationHeader = request.getHeader("Authorization");
 
-        String token = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
+            String token = authorizationHeader.substring(7);
+
+            // 유효한 토큰인지 확인
             if (jwtUtil.validateToken(token)) {
-                // 추가 인증 처리 로직
+                String username = jwtUtil.extractUsername(token);
+                if (username != null) {
+                    // TODO: 인증 객체 설정 로직 (추가 설정 필요 시)
+                }
             }
         }
+
+        // 필터 체인 계속 진행
         filterChain.doFilter(request, response);
     }
 }
