@@ -29,6 +29,8 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/user/**
+  config:
+    import: "optional:configserver:"
 
 logging:
   level:
