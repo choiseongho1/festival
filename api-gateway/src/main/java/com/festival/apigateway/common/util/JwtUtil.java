@@ -2,13 +2,15 @@ package com.festival.apigateway.common.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 @Component
 public class JwtUtil {
+    private final String SECRET_KEY = "VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa\n";
 
-    private final String SECRET_KEY = "your_secret_key";
     static final int ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
     static final int REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7;
 
