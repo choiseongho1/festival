@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -28,8 +30,8 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?>  loginUser(@RequestBody UserLoginDto userLoginDto) {
-        String token = userService.loginUser(userLoginDto);
-        return ResponseEntity.ok(token); // JWT 토큰을 클라이언트에 반환
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody UserLoginDto userLoginDto) {
+        Map<String, String> tokens = userService.loginUser(userLoginDto);
+        return ResponseEntity.ok(tokens);
     }
 }

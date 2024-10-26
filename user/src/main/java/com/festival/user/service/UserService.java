@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -23,6 +26,8 @@ public class UserService {
 
     // JWT 관련 Util
     private final JwtUtil jwtUtil;
+
+
 
 
     // 회원가입 로직
@@ -46,11 +51,17 @@ public class UserService {
     }
 
     // 사용자 로그인
-    public String loginUser(UserLoginDto userLoginDto) {
+    public Map<String, String> loginUser(UserLoginDto userLoginDto) {
         User user = userRepository.findByUsername(userLoginDto.getUsername());
         if (user == null || !passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid username or password");
         }
-        return jwtUtil.generateToken(userLoginDto.getUsername());  // JWT 토큰 생성
+        String accessToken = jwtUtil.generateToken(user.getUsername(), "ACCESS");
+        String refreshToken = jwtUtil.generateToken(user.getUsername(), "REFRESH");
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+        return tokens;
     }
 }

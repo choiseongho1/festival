@@ -13,6 +13,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -114,7 +116,8 @@ class UserServiceTest {
     public void testLoginUser_Success() {
         // 1. 가짜 데이터 준비
         String rawPassword = "password";
-        String expectedToken = "jwt_token";
+        String accessToken = "access_token";
+        String refreshToken = "refresh_token";
 
         User user = User.builder()
                 .username("testuser")
@@ -126,7 +129,8 @@ class UserServiceTest {
 
         // 2. Mock 설정
         when(userRepository.findByUsername("testuser")).thenReturn(user);
-        when(jwtUtil.generateToken("testuser")).thenReturn(expectedToken);
+        when(jwtUtil.generateToken("testuser", "ACCESS")).thenReturn(accessToken);
+        when(jwtUtil.generateToken("testuser", "REFRESH")).thenReturn(refreshToken);
 
         // 3. 테스트 수행
         UserLoginDto loginDto = UserLoginDto.builder()
@@ -134,10 +138,11 @@ class UserServiceTest {
                 .inputPassword(rawPassword)
                 .build();
 
-        String result = userService.loginUser(loginDto);
+        Map<String, String> result = userService.loginUser(loginDto);
 
         // 4. 검증
-        assertEquals(expectedToken, result);
+        assertEquals(result.get("accessToken"), accessToken);
+        assertEquals(result.get("refreshToken"), refreshToken);
     }
 
     @Test
