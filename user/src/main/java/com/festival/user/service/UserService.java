@@ -64,8 +64,4 @@ public class UserService {
         tokens.put("refreshToken", refreshToken);
         return tokens;
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> e97c9392a588289923946d6d6a7f80e718dde0b2
 }
