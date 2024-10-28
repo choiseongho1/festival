@@ -35,8 +35,4 @@ public class User {
     private boolean availableForMatching;  // 매칭 가능 여부
     private String preferredFestivalType;  // 선호하는 축제 종류 (음악, 문화 등)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e97c9392a588289923946d6d6a7f80e718dde0b2
 }
