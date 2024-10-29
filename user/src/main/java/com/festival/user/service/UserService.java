@@ -8,6 +8,7 @@ import com.festival.user.dto.UserSaveDto;
 import com.festival.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 비밀번호 인코더
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // JWT 관련 Util
     private final JwtUtil jwtUtil;
