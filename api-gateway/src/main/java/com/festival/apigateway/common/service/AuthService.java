@@ -45,10 +45,4 @@ public class AuthService {
         }
     }
 
-    /**
-     * JWT 리프레시 토큰 관리 메서드 (추가 작업 필요 시 구현 예정)
-     */
-    public void manageRefreshToken(String userId, String refreshToken) {
-        // 리프레시 토큰 저장 또는 갱신 로직 구현
-    }
 }
