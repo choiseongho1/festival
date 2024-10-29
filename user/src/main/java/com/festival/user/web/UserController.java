@@ -28,10 +28,4 @@ public class UserController {
         return userService.registerUser(userSaveDto);
     }
 
-    // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody UserLoginDto userLoginDto) {
-        Map<String, String> tokens = userService.loginUser(userLoginDto);
-        return ResponseEntity.ok(tokens);
-    }
 }
