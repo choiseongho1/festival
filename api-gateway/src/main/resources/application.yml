@@ -1,46 +1,73 @@
 server:
-  port: 8000
+  port: 8000  # API Gateway가 사용할 포트 설정
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${random.value}
-    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}  # Eureka 서버에 등록될 고유 인스턴스 ID (애플리케이션 이름과 랜덤 값으로 구성)
+    prefer-ip-address: true  # 호스트 이름 대신 IP 주소를 사용하여 Eureka에 등록
+
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
-    fetch-registry: true
-    register-with-eureka: true
-
+      defaultZone: http://localhost:8761/eureka/  # Eureka 서버의 기본 URL 설정 (Eureka 서버의 주소)
+    fetch-registry: true  # Eureka 클라이언트가 등록된 인스턴스의 레지스트리를 가져오는지 여부 (true로 설정하여 가져옴)
+    register-with-eureka: true  # Eureka 서버에 인스턴스를 등록할지 여부 (true로 설정하여 등록)
 
 spring:
   application:
-    name: api-gateway
+    name: api-gateway  # 애플리케이션 이름을 설정 (Eureka에 등록 시 사용)
+
   main:
-    web-application-type: reactive
+    web-application-type: reactive  # WebFlux와 같은 리액티브 웹 애플리케이션 유형으로 설정
+
+  # Kafka 설정
+  kafka:
+    bootstrap-servers: localhost:9092  # Kafka 서버 주소
+    consumer:
+      group-id: "api-gateway-group"  # Kafka Consumer 그룹 ID
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 키 역직렬화 방식
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 값 역직렬화 방식
+      auto-offset-reset: earliest  # Kafka 메시지 읽기 시작 위치 (처음부터 읽기 설정)
+
   cloud:
     gateway:
       discovery:
         locator:
-          enabled: true
-      routes:
-        - id: data-collection-route
-          uri: lb://DATA-COLLECTION
+          enabled: true  # Eureka를 통해 서비스 발견이 가능하도록 설정
+
+      routes:  # 라우팅 경로 설정
+        - id: data-collection-route  # 데이터 수집 서비스 라우트 ID
+          uri: lb://DATA-COLLECTION  # DATA-COLLECTION 서비스로 라우팅 (Eureka에서 로드 밸런싱)
           predicates:
-            - Path=/api/data-collection/**
-        - id: user-service-route
-          uri: lb://USER-SERVICE
+            - Path=/api/data-collection/**  # 경로 프레디케이트로 요청 경로 지정 (해당 경로로 요청 시 이 라우트로 전달)
+        - id: user-service-route  # 사용자 서비스 라우트 ID
+          uri: lb://USER-SERVICE  # USER-SERVICE로 라우팅 (Eureka에서 로드 밸런싱)
           predicates:
-            - Path=/api/user/**
+            - Path=/api/user/**  # 경로 프레디케이트로 요청 경로 지정 (해당 경로로 요청 시 이 라우트로 전달)
+
   config:
-    import: "optional:configserver:"
+    import: "optional:configserver:"  # Config 서버에서 설정을 가져오도록 설정 (없으면 생략)
+
+  redis:
+    host: localhost  # Redis 서버의 호스트 주소 (로컬 Redis 서버이므로 localhost)
+    port: 6379       # Redis 서버의 기본 포트 (6379)
+    password: ""     # Redis 서버 비밀번호 (없으면 빈 문자열)
+    timeout: 6000    # Redis 서버와의 연결 시간 초과 설정 (밀리초 단위)
+
+    lettuce:  # Lettuce는 Redis 연결 관리 라이브러리로, 고성능 비동기 및 동시성 처리를 지원
+      pool:
+        max-active: 8     # 동시에 연결 가능한 최대 커넥션 수 (기본값은 8)
+        max-idle: 8       # 유휴 상태로 유지할 최대 커넥션 수 (여유가 있는 연결)
+        min-idle: 0       # 유휴 상태로 유지할 최소 커넥션 수 (기본값은 0)
+        max-wait: -1ms    # 커넥션 풀에서 연결이 반환되기를 기다리는 최대 시간 (기본값은 무제한 대기)
 
 logging:
   level:
-    #   eureka등록 로그 메세지 확인을 위한 logging level DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.cloud.netflix.eureka : DEBUG
+    # DEBUG 수준의 로깅으로 Eureka 등록 및 Gateway의 로깅 메시지를 확인 가능
+    org.springframework.cloud.gateway: DEBUG  # Spring Cloud Gateway의 로깅 수준을 DEBUG로 설정
+    org.springframework.cloud.netflix.eureka : DEBUG  # Netflix Eureka 클라이언트의 로깅 수준을 DEBUG로 설정
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info  # 관리 엔드포인트에서 health와 info를 노출
