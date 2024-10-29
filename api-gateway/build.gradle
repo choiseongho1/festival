@@ -54,6 +54,12 @@ dependencies {
 
     // kafka
     implementation 'org.springframework.kafka:spring-kafka'  // Kafka 사용
+    
+    // Kafka 테스트를 위한 의존성
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    
+    // AssertJ 테스트를 위한 의존성
+    testImplementation 'org.assertj:assertj-core'
 }
 
 dependencyManagement {
