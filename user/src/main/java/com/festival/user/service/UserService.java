@@ -2,6 +2,7 @@ package com.festival.user.service;
 
 import com.festival.user.common.kafka.LoginEventProducer;
 import com.festival.user.common.util.JwtUtil;
+import com.festival.user.common.enums.LoginStatus;
 import com.festival.user.domain.User;
 import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
@@ -56,15 +57,20 @@ public class UserService {
      * @param userLoginDto 로그인 정보 (username, password)
      * @return 올바른 사용자 여부
      */
-    public boolean authenticate(UserLoginDto userLoginDto) {
+    public LoginStatus authenticate(UserLoginDto userLoginDto) {
         User user = userRepository.findByUsername(userLoginDto.getUsername());
 
-        if (user == null || !passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
-            return false;  // 사용자 인증 실패
+        if (user == null) {
+            loginEventProducer.sendLoginEvent(userLoginDto.getUsername(), LoginStatus.USER_NOT_FOUND);
+            return LoginStatus.USER_NOT_FOUND;
         }
 
-        // 사용자 인증 성공
-        loginEventProducer.sendLoginEvent(user.getUsername());
-        return true;
+        if (!passwordEncoder.matches(userLoginDto.getInputPassword(), user.getPassword())) {
+            loginEventProducer.sendLoginEvent(userLoginDto.getUsername(), LoginStatus.INVALID_CREDENTIALS);
+            return LoginStatus.INVALID_CREDENTIALS;
+        }
+
+        loginEventProducer.sendLoginEvent(user.getUsername(), LoginStatus.SUCCESS);
+        return LoginStatus.SUCCESS;
     }
 }

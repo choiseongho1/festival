@@ -1,47 +1,78 @@
 package com.festival.user.common.kafka;
 
+import com.festival.user.common.enums.LoginStatus;
 import com.festival.user.dto.UserLoginDto;
 import com.festival.user.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
+@Slf4j
 public class LoginEventConsumer {
 
     @Autowired
-    private UserService userService;  // User 자격 검증을 위한 서비스
+    private UserService userService;  // 사용자 인증 및 계정 관리를 위한 서비스
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;  // 로그인 결과를 다시 Kafka로 보내기 위한 Template
+    private KafkaTemplate<String, String> kafkaTemplate;  // Kafka 메시지 발행을 위한 템플릿
+
+    @Autowired
+    private ObjectMapper objectMapper;  // JSON 처리를 위한 매퍼
 
     private static final String RESPONSE_TOPIC = "login-responses";
 
+    /**
+     * 로그인 요청 메시지를 소비하고 처리하는 메서드
+     * @param message JSON 형식의 로그인 요청 메시지
+     */
     @KafkaListener(topics = "login-requests", groupId = "user-service-group")
     public void consumeLoginRequest(String message) {
-        // 메시지를 파싱하여 이메일과 비밀번호 추출 (간단한 JSON 파싱 예시)
-        String username = extractUsernameFromMessage(message);
-        String password = extractPasswordFromMessage(message);
+        log.info("Received login request: {}", message);
+        
+        try {
+            // JSON 메시지 파싱
+            JsonNode jsonNode = objectMapper.readTree(message);
+            String username = jsonNode.path("username").asText();
+            String password = jsonNode.path("password").asText();
 
-        UserLoginDto loginDto = UserLoginDto.builder().username(username).inputPassword(password).build();
+            // 로그인 DTO 생성
+            UserLoginDto loginDto = UserLoginDto.builder()
+                .username(username)
+                .inputPassword(password)
+                .build();
 
+            // 사용자 인증 수행
+            LoginStatus loginStatus = userService.authenticate(loginDto);
 
-        // 자격 검증
-        boolean isAuthenticated = userService.authenticate(loginDto);
-        String responseMessage = isAuthenticated ? "{\"status\":\"success\", \"username\":\"" + username + "\"}" :
-                "{\"status\":\"failure\", \"username\":\"" + username + "\"}";
+            // 응답 메시지 생성 및 전송
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("status", loginStatus.getCode());
+            responseMap.put("message", loginStatus.getMessage());
+            responseMap.put("email", username);
+            responseMap.put("eventType", "LOGIN_RESPONSE");
 
-        // 인증 결과를 login-responses 토픽에 발행
-        kafkaTemplate.send(RESPONSE_TOPIC, responseMessage);
-    }
+            String responseMessage = objectMapper.writeValueAsString(responseMap);
+            
+            // 응답 전송
+            kafkaTemplate.send(RESPONSE_TOPIC, responseMessage)
+                .whenComplete((result, ex) -> {
+                    if (ex == null) {
+                        log.info("Login response sent successfully for user: {}", username);
+                    } else {
+                        log.error("Failed to send login response: {}", ex.getMessage());
+                    }
+                });
 
-    private String extractUsernameFromMessage(String message) {
-        // JSON 파싱 로직 (간단히 문자열 파싱 방식으로 작성)
-        return message.split("\"username\":\"")[1].split("\"")[0];
-    }
-
-    private String extractPasswordFromMessage(String message) {
-        return message.split("\"password\":\"")[1].split("\"")[0];
+        } catch (Exception e) {
+            log.error("Error processing login request: {}", e.getMessage(), e);
+        }
     }
 }

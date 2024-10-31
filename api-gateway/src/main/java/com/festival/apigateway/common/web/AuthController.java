@@ -1,5 +1,6 @@
 package com.festival.apigateway.common.web;
 
+import com.festival.apigateway.common.dto.LoginRequest;
 import com.festival.apigateway.common.service.AuthService;
 import com.festival.apigateway.common.service.RefreshTokenService;
 import com.festival.apigateway.common.util.JwtUtil;
@@ -33,8 +34,8 @@ public class AuthController {
      * @return ResponseEntity<String> 로그인 결과 및 JWT 토큰
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        String responseMessage = authService.handleLoginRequest(email, password);
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        String responseMessage = authService.handleLoginRequest(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(responseMessage);
     }
 
