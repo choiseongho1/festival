@@ -15,9 +15,14 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092  # Kafka 서버 주소 (기본 포트는 9092)
     producer:
+      client-id: "user-service-producer"    # Producer 식별자 추가
       key-serializer: org.apache.kafka.common.serialization.StringSerializer  # Kafka 키 직렬화 방식
       value-serializer: org.apache.kafka.common.serialization.StringSerializer  # Kafka 값 직렬화 방식
-
+      properties:
+        request.timeout.ms: 5000
+        max.block.ms: 5000
+        # 토픽 자동 생성 허용
+        allow.auto.create.topics: true
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.value}  # Eureka에 등록되는 고유 인스턴스 ID (애플리케이션 이름과 랜덤 값으로 구성)
@@ -38,3 +43,10 @@ management:
     web:
       exposure:
         include: configprops, env  # /actuator/configprops 및 /actuator/env 엔드포인트 활성화 (설정 속성 및 환경 정보 확인 가능)
+
+logging:
+  level:
+    org.apache.kafka: INFO  # Kafka 전반적인 로깅
+    org.apache.kafka.clients.consumer: INFO  # Consumer 관련 로깅
+    org.apache.kafka.clients.producer: INFO  # Producer 관련 로깅
+    org.apache.kafka.clients.NetworkClient: ERROR

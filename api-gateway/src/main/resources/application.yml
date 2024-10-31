@@ -27,6 +27,13 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 키 역직렬화 방식
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # 값 역직렬화 방식
       auto-offset-reset: earliest  # Kafka 메시지 읽기 시작 위치 (처음부터 읽기 설정)
+    admin:
+      auto-create: true    # 토픽 자동 생성 활성화
+      properties:
+        bootstrap.servers: localhost:9092
+        # 토픽 생성 관련 설정
+        num.partitions: 1
+        default.replication.factor: 1
 
   cloud:
     gateway:
@@ -66,6 +73,10 @@ logging:
     org.springframework.cloud.gateway: DEBUG  # Spring Cloud Gateway의 로깅 수준을 DEBUG로 설정
     org.springframework.cloud.netflix.eureka : DEBUG  # Netflix Eureka 클라이언트의 로깅 수준을 DEBUG로 설정
 
+    org.apache.kafka: INFO  # Kafka 전반적인 로깅
+    org.apache.kafka.clients.consumer: INFO  # Consumer 관련 로깅
+    org.apache.kafka.clients.producer: INFO  # Producer 관련 로깅
+    org.apache.kafka.clients.NetworkClient: ERROR
 management:
   endpoints:
     web:
