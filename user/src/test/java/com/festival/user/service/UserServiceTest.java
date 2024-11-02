@@ -1,5 +1,6 @@
 package com.festival.user.service;
 
+import com.festival.user.common.enums.LoginStatus;
 import com.festival.user.common.kafka.LoginEventProducer;
 import com.festival.user.domain.User;
 import com.festival.user.dto.UserLoginDto;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -43,7 +43,7 @@ class UserServiceTest {
 
     
     @Test
-    void authenticate_ValidCredentials_ReturnsTrue() {
+    void authenticate_ValidCredentials_ReturnsSuccess() {
         // given
         String username = "testUser";
         String password = "testPassword";
@@ -63,17 +63,17 @@ class UserServiceTest {
         log.info("테스트 시작: 올바른 자격 증명으로 인증 시도");
 
         // when
-        boolean result = userService.authenticate(loginDto);
+        LoginStatus result = userService.authenticate(loginDto);
 
         // then
         log.info("인증 결과: {}", result);
-        assertThat(result).isTrue();
-        verify(loginEventProducer).sendLoginEvent(username);
+        assertThat(result).isEqualTo(LoginStatus.SUCCESS);
+        verify(loginEventProducer).sendLoginEvent(username, LoginStatus.SUCCESS);
         log.info("로그인 이벤트가 성공적으로 발행되었습니다.");
     }
 
     @Test
-    void authenticate_InvalidPassword_ReturnsFalse() {
+    void authenticate_InvalidPassword_ReturnsInvalidCredentials() {
         // given
         String username = "testUser";
         String correctPassword = "correctPassword";
@@ -94,17 +94,17 @@ class UserServiceTest {
         log.info("테스트 시작: 잘못된 비밀번호로 인증 시도");
 
         // when
-        boolean result = userService.authenticate(loginDto);
+        LoginStatus result = userService.authenticate(loginDto);
 
         // then
         log.info("인증 결과: {}", result);
-        assertThat(result).isFalse();
-        verify(loginEventProducer, never()).sendLoginEvent(anyString());
-        log.info("잘못된 비밀번호로 인해 로그인 이벤트가 발행되지 않았습니다.");
+        assertThat(result).isEqualTo(LoginStatus.INVALID_CREDENTIALS);
+        verify(loginEventProducer).sendLoginEvent(username, LoginStatus.INVALID_CREDENTIALS);
+        log.info("잘못된 비밀번호로 인해 INVALID_CREDENTIALS 이벤트가 발행되었습니다.");
     }
 
     @Test
-    void authenticate_UserNotFound_ReturnsFalse() {
+    void authenticate_UserNotFound_ReturnsUserNotFound() {
         // given
         String username = "nonExistentUser";
         String password = "anyPassword";
@@ -118,13 +118,13 @@ class UserServiceTest {
         log.info("테스트 시작: 존재하지 않는 사용자로 인증 시도");
 
         // when
-        boolean result = userService.authenticate(loginDto);
+        LoginStatus result = userService.authenticate(loginDto);
 
         // then
         log.info("인증 결과: {}", result);
-        assertThat(result).isFalse();
-        verify(loginEventProducer, never()).sendLoginEvent(anyString());
-        log.info("존재하지 않는 사용자로 인해 로그인 이벤트가 발행되지 않았습니다.");
+        assertThat(result).isEqualTo(LoginStatus.USER_NOT_FOUND);
+        verify(loginEventProducer).sendLoginEvent(username, LoginStatus.USER_NOT_FOUND);
+        log.info("존재하지 않는 사용자로 인해 USER_NOT_FOUND 이벤트가 발행되었습니다.");
     }
 
     @Test
