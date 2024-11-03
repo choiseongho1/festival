@@ -1,12 +1,12 @@
 server:
-  port: 8083  # group-service? ???? ??
+  port: 8083  # group-service가 사용하는 포트
 
 spring:
   application:
-    name: group-service  # ?????? ??? group-service? ?? (Eureka ?? ? ??)
+    name: group-service  # 애플리케이션 이름을 group-service로 설정 (Eureka 등록 시 사용)
 
   config:
-    import: "optional:configserver:"  # ?? Config ???? ??? ????? ?? (Config ??? ??? ?? ??)
+    import: "optional:configserver:"  # 외부 Config 서버에서 설정을 가져오도록 설정 (Config 서버가 없으면 생략 가능)
 
   datasource:
     url: jdbc:mysql://localhost:3306/festival_db
@@ -21,15 +21,44 @@ spring:
         format_sql: false
         show_sql: false
 
+  kafka:
+    bootstrap-servers: localhost:9092  # Kafka 서버 주소 (기본 포트는 9092)
+    producer:
+      client-id: "group-service-producer"    # Producer 식별자 추가
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer  # Kafka 키 직렬화 방식
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer  # Kafka 값 직렬화 방식
+      properties:
+        request.timeout.ms: 5000
+        max.block.ms: 5000
+        # 토픽 자동 생성 허용
+        allow.auto.create.topics: true
 
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${random.value}  # Eureka? ???? ?? ???? ID (?????? ??? ?? ??? ??)
-    prefer-ip-address: true  # ??? ?? ?? IP ??? ???? Eureka? ??
+    instance-id: ${spring.application.name}:${random.value}  # Eureka에 등록되는 고유 인스턴스 ID (애플리케이션 이름과 랜덤 값으로 구성)
+    prefer-ip-address: true  # 호스트 이름 대신 IP 주소를 사용하여 Eureka에 등록
 
   client:
-    register-with-eureka: true  # ? ???(user-service)? Eureka? ???? ??
-    fetch-registry: true  # Eureka?? ?? ???? ????? ???? ??
+    register-with-eureka: true  # 이 서비스(user-service)를 Eureka에 등록할지 여부
+    fetch-registry: true  # Eureka에서 다른 서비스의 인스턴스를 가져올지 여부
     service-url:
-      defaultZone: http://localhost:8761/eureka  # Eureka ?? URL (?? ??? 8761)
+      defaultZone: http://localhost:8761/eureka  # Eureka 서버 URL (기본 포트는 8761)
+
+
+
+
+
+
+
+
+
+
+
+
+logging:
+  level:
+    org.apache.kafka: INFO  # Kafka 전반적인 로깅
+    org.apache.kafka.clients.consumer: INFO  # Consumer 관련 로깅
+    org.apache.kafka.clients.producer: INFO  # Producer 관련 로깅
+    org.apache.kafka.clients.NetworkClient: ERROR
