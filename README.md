@@ -1,5 +1,3 @@
-Here's a revised version of your README.md that enhances clarity and readability while maintaining the essential features of your Festival Group Matching System. 
-
 ```markdown
 # 🎪 Festival Group Matching System
 
@@ -18,20 +16,19 @@ Here's a revised version of your README.md that enhances clarity and readability
 ## 🛠 기술 스택
 
 ### Backend
-- ![Java](https://img.shields.io/badge/Java-17-orange) : 자바 언어
-- ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.0-green) : 빠른 애플리케이션 개발
-- ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-2023.0.0-green) : 클라우드 구축
-- ![Gradle](https://img.shields.io/badge/Gradle-8.5-blue) : 의존성 관리 도구
+- Java 17
+- Spring Boot 3.2.0
+- Spring Cloud 2023.0.0
+- Gradle 8.5
 
 ### Database
-- ![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green) : 사용자 및 매칭 데이터
-- ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue) : 그룹 및 축제 정보
+- MongoDB : 사용자/매칭 데이터
+- MySQL : 그룹/축제 정보
 
 ### Infrastructure
-- ![Kafka](https://img.shields.io/badge/Kafka-3.6-red) : 이벤트 메시징 시스템
-- ![Eureka](https://img.shields.io/badge/Eureka-Service_Discovery-lightgrey) : 서비스 검색
-- ![Docker](https://img.shields.io/badge/Docker-24.0-blue) : 컨테이너 관리
-
+- Kafka : 이벤트 메시징
+- Eureka : 서비스 디스커버리
+- Docker : 컨테이너화
 
 ```markdown
 ## 📦 시스템 구성
@@ -44,7 +41,6 @@ festival-matching/
 ├── match/                 # 사용자-그룹 매칭 알고리즘
 ├── user/                  # 회원 관리, 인증, 프로필 관리
 └── data-collection/       # 공공 데이터 수집 및 가공
-```
 ```
 
 ### 각 서비스별 주요 역할
@@ -84,6 +80,4 @@ festival-matching/
 - 실시간 알림 서비스
 - 매칭 이력 관리
 
----
-이 시스템은 축제의 즐거움을 두 배로 만들어 줄 것입니다! 질문이 있으시면 언제든지 물어보세요. 😊
 ```
