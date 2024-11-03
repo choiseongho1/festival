@@ -1,1 +1,83 @@
-# festival
+
+
+```markdown:README.md
+# 🎪 Festival Group Matching System
+
+축제를 함께 즐길 그룹을 찾고 싶으신가요? 관심사가 비슷한 사람들과 함께 축제를 즐겨보세요! 
+
+## 🎯 프로젝트 소개
+
+Festival Group Matching System은 축제 참가자들을 위한 그룹 매칭 플랫폼입니다.
+사용자의 관심사와 선호도를 기반으로 최적의 그룹을 추천해드립니다.
+
+- 🤝 리더와 참가자로 구성된 1:N 그룹 매칭
+- 🎨 사용자 선호도 기반 맞춤형 추천
+- 📊 실시간 축제 정보 연동
+- ⚡ 이벤트 기반 실시간 매칭
+
+## 🛠 기술 스택
+
+### Backend
+- ![Java](https://img.shields.io/badge/Java-17-orange)
+- ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.0-green)
+- ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-2023.0.0-green)
+- ![Gradle](https://img.shields.io/badge/Gradle-8.5-blue)
+
+### Database
+- ![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green) : 사용자/매칭 데이터
+- ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue) : 그룹/축제 정보
+
+### Infrastructure
+- ![Kafka](https://img.shields.io/badge/Kafka-3.6-red) : 이벤트 메시징
+- ![Eureka](https://img.shields.io/badge/Eureka-Service_Discovery-lightgrey)
+- ![Docker](https://img.shields.io/badge/Docker-24.0-blue)
+
+## 📦 시스템 구성
+
+```
+festival-matching/
+├── api-gateway/           # API 라우팅, 인증/인가, 로드밸런싱
+├── eureka-server/         # 서비스 디스커버리 및 레지스트리
+├── group/                 # 그룹 생성/관리, 참가자 관리
+├── match/                 # 사용자-그룹 매칭 알고리즘
+├── user/                  # 회원 관리, 인증, 프로필 관리
+└── data-collection/       # 공공 데이터 수집 및 가공
+```
+
+각 서비스별 주요 역할:
+
+### 🚀 API Gateway
+- 클라이언트 요청 라우팅
+- JWT 기반 인증/인가
+- 요청/응답 필터링
+- 로드밸런싱
+
+### 🔍 Eureka Server
+- 서비스 등록 및 발견
+- 상태 모니터링
+- 서비스 레지스트리 관리
+
+### 📊 Data Collection
+- 공공 데이터 수집
+- 배치 작업 관리
+
+## ⭐ 주요 기능
+
+### 1. 그룹 매칭 시스템 🤝
+- 축제별 그룹 생성 및 관리
+- 사용자 선호도 기반 그룹 추천
+- 실시간 매칭 알고리즘 적용
+- 그룹 참가 신청 및 수락/거절
+
+### 2. 축제 정보 관리 🎉
+- 공공데이터 포털 연동
+- 실시간 축제 정보 업데이트
+- 지역별/카테고리별 축제 검색
+- 축제 상세 정보 제공
+
+### 3. 사용자 매칭 서비스 👥
+- 사용자 프로필 기반 매칭
+- 관심사 기반 그룹 추천
+- 실시간 알림 서비스
+- 매칭 이력 관리
+```
