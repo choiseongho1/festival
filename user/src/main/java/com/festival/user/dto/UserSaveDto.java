@@ -33,7 +33,6 @@ public class UserSaveDto {
                 .fullName(this.fullName)
                 .phoneNumber(this.phoneNumber)
                 .phoneVerified(this.phoneVerified)
-                .roles(this.roles)
                 .favoriteFestival(this.favoriteFestival)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
