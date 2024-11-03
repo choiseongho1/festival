@@ -1,0 +1,48 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.7'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.festival'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	/* 20241103 추가 내용 */
+	// Eureka Client 추가
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	// actuator 추가
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	// cloud-config
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	// Lombok test 의존성 수정
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3" // Spring Cloud Kilburn 버전
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

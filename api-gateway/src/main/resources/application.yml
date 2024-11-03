@@ -50,6 +50,10 @@ spring:
           uri: lb://USER-SERVICE  # USER-SERVICE로 라우팅 (Eureka에서 로드 밸런싱)
           predicates:
             - Path=/api/user/**  # 경로 프레디케이트로 요청 경로 지정 (해당 경로로 요청 시 이 라우트로 전달)
+        - id: match-service-route  # 사용자 서비스 라우트 ID
+          uri: lb://MATCH-SERVICE  # MATCH-SERVICE로 라우팅 (Eureka에서 로드 밸런싱)
+          predicates:
+            - Path=/api/match/**  # 경로 프레디케이트로 요청 경로 지정 (해당 경로로 요청 시 이 라우트로 전달)
 
   config:
     import: "optional:configserver:"  # Config 서버에서 설정을 가져오도록 설정 (없으면 생략)
