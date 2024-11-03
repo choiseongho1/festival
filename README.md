@@ -32,9 +32,6 @@ Here's a revised version of your README.md that enhances clarity and readability
 - ![Eureka](https://img.shields.io/badge/Eureka-Service_Discovery-lightgrey) : 서비스 검색
 - ![Docker](https://img.shields.io/badge/Docker-24.0-blue) : 컨테이너 관리
 
-## 📦 시스템 구성
-
-GitHub에서 디렉토리 구조를 마크다운 형식으로 출력할 때, 코드 블록 안에서 줄바꿈과 정렬이 제대로 나타나지 않을 수 있습니다. 이를 해결하기 위해 각 항목의 앞에 공백을 추가하여 계층 구조를 명확하게 표시할 수 있습니다. 아래와 같이 수정해 보세요:
 
 ```markdown
 ## 📦 시스템 구성
