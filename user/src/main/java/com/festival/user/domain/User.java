@@ -1,5 +1,6 @@
 package com.festival.user.domain;
 
+import com.festival.user.common.domain.BaseDomain;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Document(collection = "users")
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
-public class User {
+public class User extends BaseDomain {
 
     @Id
     private String id;  // MongoDB에서 자동 생성되는 고유 ID
@@ -24,12 +25,7 @@ public class User {
     private String phoneNumber;  // 연락처 (필수)
     private boolean phoneVerified;  // 전화번호 인증 여부
 
-    private Set<String> roles;  // 권한 (ROLE_USER, ROLE_ADMIN 등)
-
     private String favoriteFestival;  // 선호하는 축제 (사용자 프로필용)
-
-    private LocalDateTime createdAt;  // 사용자 등록 날짜
-    private LocalDateTime updatedAt;  // 마지막 수정 날짜
 
     // 추가로 매칭 시스템에 필요한 정보들
     private boolean availableForMatching;  // 매칭 가능 여부

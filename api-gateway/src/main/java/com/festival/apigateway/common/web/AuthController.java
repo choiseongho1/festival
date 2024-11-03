@@ -18,7 +18,7 @@ import java.util.Map;
  * 로그인, 토큰 재발급 등의 인증 관련 엔드포인트를 제공합니다.
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor  // 생성자 주입을 위한 lombok 어노테이션
 public class AuthController {
 
