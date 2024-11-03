@@ -34,6 +34,11 @@ Here's a revised version of your README.md that enhances clarity and readability
 
 ## 📦 시스템 구성
 
+GitHub에서 디렉토리 구조를 마크다운 형식으로 출력할 때, 코드 블록 안에서 줄바꿈과 정렬이 제대로 나타나지 않을 수 있습니다. 이를 해결하기 위해 각 항목의 앞에 공백을 추가하여 계층 구조를 명확하게 표시할 수 있습니다. 아래와 같이 수정해 보세요:
+
+```markdown
+## 📦 시스템 구성
+
 ```
 festival-matching/
 ├── api-gateway/           # API 라우팅, 인증/인가, 로드밸런싱
@@ -42,6 +47,7 @@ festival-matching/
 ├── match/                 # 사용자-그룹 매칭 알고리즘
 ├── user/                  # 회원 관리, 인증, 프로필 관리
 └── data-collection/       # 공공 데이터 수집 및 가공
+```
 ```
 
 ### 각 서비스별 주요 역할
