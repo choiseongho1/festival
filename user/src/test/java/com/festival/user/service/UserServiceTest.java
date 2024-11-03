@@ -188,4 +188,62 @@ class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
         log.info("예상대로 중복 회원 가입 시도가 RuntimeException으로 차단되었습니다.");
     }
+
+    @Test
+    void isPhoneVerified_VerifiedUser_ReturnsTrue() {
+        // given
+        String userId = "user123";
+        User user = User.builder()
+                .username(userId)
+                .phoneVerified(true)
+                .build();
+
+        when(userRepository.findByUsername(userId)).thenReturn(user);
+        
+        log.info("테스트 시작: 휴대폰 인증된 사용자 확인");
+
+        // when
+        boolean result = userService.isPhoneVerified(userId);
+
+        // then
+        assertThat(result).isTrue();
+        log.info("휴대폰 인증 상태 확인 완료. UserId: {}, isVerified: {}", userId, result);
+    }
+
+    @Test
+    void isPhoneVerified_UnverifiedUser_ReturnsFalse() {
+        // given
+        String userId = "user123";
+        User user = User.builder()
+                .username(userId)
+                .phoneVerified(false)
+                .build();
+
+        when(userRepository.findByUsername(userId)).thenReturn(user);
+        
+        log.info("테스트 시작: 휴대폰 미인증 사용자 확인");
+
+        // when
+        boolean result = userService.isPhoneVerified(userId);
+
+        // then
+        assertThat(result).isFalse();
+        log.info("휴대폰 인증 상태 확인 완료. UserId: {}, isVerified: {}", userId, result);
+    }
+
+    @Test
+    void isPhoneVerified_NonExistentUser_ReturnsFalse() {
+        // given
+        String userId = "nonexistent";
+        when(userRepository.findByUsername(userId)).thenReturn(null);
+        
+        log.info("테스트 시작: 존재하지 않는 사용자 확인");
+
+        // when
+        boolean result = userService.isPhoneVerified(userId);
+
+        // then
+        assertThat(result).isFalse();
+        log.info("존재하지 않는 사용자 확인 완료. UserId: {}", userId);
+    }
 }

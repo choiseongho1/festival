@@ -8,6 +8,7 @@ import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     // 사용자 레포지토리
@@ -72,5 +74,25 @@ public class UserService {
 
         loginEventProducer.sendLoginEvent(user.getUsername(), LoginStatus.SUCCESS);
         return LoginStatus.SUCCESS;
+    }
+
+
+    /**
+     * 사용자의 휴대폰 인증 상태를 확인하는 메서드
+     * 
+     * @param userId 확인할 사용자의 ID
+     * @return 휴대폰 인증 여부
+     */
+    public boolean isPhoneVerified(String userId) {
+        User user = userRepository.findByUsername(userId);
+        
+        if (user == null) {
+            log.warn("존재하지 않는 사용자. UserId: {}", userId);
+            return false;
+        }
+
+        log.info("휴대폰 인증 상태 조회. UserId: {}, isVerified: {}", 
+                userId, user.isPhoneVerified());
+        return user.isPhoneVerified();
     }
 }
