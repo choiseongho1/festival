@@ -1,3 +1,4 @@
+// src/components/Header.js
 import React from 'react';
 import { 
   AppBar, 
@@ -23,11 +24,15 @@ function Header() {
           🎪 Festival Matching
         </Typography>
         <Box>
-          <Button color="inherit" onClick={() => navigate('/login')}>
+          <Button 
+            color="inherit" 
+            onClick={() => navigate('/login')}
+          >
             로그인
           </Button>
           <Button 
             variant="contained" 
+            onClick={() => navigate('/signup')}
             sx={{ 
               ml: 2, 
               backgroundColor: '#E74C3C',
@@ -35,7 +40,6 @@ function Header() {
                 backgroundColor: '#C0392B'
               }
             }}
-            onClick={() => navigate('/signup')}
           >
             회원가입
           </Button>
