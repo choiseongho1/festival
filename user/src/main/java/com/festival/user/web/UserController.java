@@ -4,6 +4,7 @@ import com.festival.user.domain.User;
 import com.festival.user.dto.UserLoginDto;
 import com.festival.user.dto.UserSaveDto;
 import com.festival.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/health-check")
     public String healthCheck() {

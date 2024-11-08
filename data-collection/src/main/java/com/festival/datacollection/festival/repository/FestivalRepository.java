@@ -5,14 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface FestivalRepository extends JpaRepository<Festival, String> {
     
     // 현재 진행 중이거나 예정된 축제 조회
-    @Query("SELECT f FROM Festival f WHERE f.eventEndDate >= CURRENT_DATE ORDER BY f.eventStartDate ASC")
+    @Query("SELECT f FROM Festival f WHERE f.eventEndDate >= FUNCTION('DATE_FORMAT', CURRENT_DATE, '%Y-%m-%d') ORDER BY f.eventStartDate ASC")
     Page<Festival> findCurrentAndUpcomingFestivals(Pageable pageable);
+    
     
     // 제목으로 검색
     Page<Festival> findByTitleContaining(String keyword, Pageable pageable);

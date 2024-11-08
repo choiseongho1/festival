@@ -13,11 +13,16 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/data-collection/festivals")
+@RequestMapping("/api/data-collection")
 @RequiredArgsConstructor
 public class FestivalController {
 
     private final FestivalService festivalService;
+
+    @GetMapping("/health-check")
+    public String healthCheck() {
+        return "Data-collection Server is running successfully";
+    }
 
     @GetMapping
     public ResponseEntity<Page<FestivalListDto>> getFestivalList(

@@ -89,7 +89,10 @@ function Home() {
               </Paper>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Paper sx={{ p: 3, textAlign: 'center', height: '100%' }}>
+              <Paper 
+                sx={{ p: 3, textAlign: 'center', height: '100%', cursor: 'pointer' }} 
+                onClick={() => navigate('/festival')} // 클릭 시 FestivalList로 이동
+              >
                 <Typography variant="h6" gutterBottom>
                   🎉 축제 정보
                 </Typography>
