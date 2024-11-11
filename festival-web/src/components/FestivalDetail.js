@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, CircularProgress, Card, CardContent, CardMedia, Box, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { fetchFestivalDetail } from '../api/festivalApi'; // API 호출 함수 가져오기
+import { fetchFestivalDetail } from '../api/festivalApi';
+import KakaoMap from './KakaoMap';
 
 const FestivalDetail = () => {
   const { contentId } = useParams();
@@ -13,7 +14,7 @@ const FestivalDetail = () => {
     const loadFestivalDetail = async () => {
       setLoading(true);
       try {
-        const data = await fetchFestivalDetail(contentId); // API 호출
+        const data = await fetchFestivalDetail(contentId);
         setFestival(data);
       } catch (error) {
         console.error('축제 상세 정보를 가져오는 중 오류 발생:', error);
@@ -26,59 +27,112 @@ const FestivalDetail = () => {
   }, [contentId]);
 
   return (
-    <Container>
+    <Container maxWidth="lg"> {/* 컨테이너 크기 조정 */}
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
       ) : (
         festival && (
-          <Card sx={{ marginTop: 2 }}>
+          <Card sx={{ marginTop: 3, marginBottom: 3 }}>
             <CardContent>
-              <Typography variant="h4" gutterBottom>
+              <Typography 
+                variant="h4" 
+                gutterBottom 
+                sx={{ 
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  mb: 3
+                }}
+              >
                 {festival.title}
               </Typography>
-              <Box display="flex" justifyContent="center" mb={2}>
-                {festival.firstImage && (
+              
+              {/* 이미지 섹션 */}
+              {festival.firstImage && (
+                <Box 
+                  display="flex" 
+                  justifyContent="center" 
+                  mb={4}
+                  sx={{
+                    width: '100%',
+                    maxHeight: '500px', // 최대 높이 설정
+                    overflow: 'hidden',
+                    borderRadius: 2,
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                  }}
+                >
                   <CardMedia
                     component="img"
-                    height="200"
                     image={festival.firstImage}
                     alt={festival.title}
-                    sx={{ borderRadius: 1 }}
+                    sx={{
+                      width: '100%',
+                      height: 'auto',
+                      maxHeight: '500px', // 이미지 최대 높이
+                      objectFit: 'contain' // 이미지 비율 유지
+                    }}
                   />
-                )}
-              </Box>
-              <Typography variant="body1" gutterBottom>
-                <strong>위치:</strong> {festival.addr1} {festival.addr2}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>시작일:</strong> {festival.eventStartDate}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>종료일:</strong> {festival.eventEndDate}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>전화번호:</strong> {festival.tel}
-              </Typography>
-              {/* KakaoMap 컴포넌트 사용 */}
-              {/* {festival.mapx && festival.mapy && (
-                <KakaoMap mapy={festival.mapy} mapx={festival.mapx} title={festival.title} />
-              )} */}
-              {/* 지도 링크 추가 */}
-              {festival.mapx && festival.mapy && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  href={`https://map.kakao.com/link/map/${festival.title},${festival.mapy},${festival.mapx}`}
-                  target="_blank"
-                  sx={{ mt: 2 }}
-                >
-                  지도에서 보기
-                </Button>
+                </Box>
               )}
-              {/* 추가적인 상세 정보 표시 */}
-              <Typography variant="body1" gutterBottom>
-                <strong>상세 설명:</strong> {festival.description || '상세 설명이 없습니다.'}
-              </Typography>
+
+              {/* 축제 정보 섹션 */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="body1" gutterBottom sx={{ fontSize: '1.1rem', mb: 2 }}>
+                  <strong>위치:</strong> {festival.addr1} {festival.addr2}
+                </Typography>
+                <Typography variant="body1" gutterBottom sx={{ fontSize: '1.1rem', mb: 2 }}>
+                  <strong>시작일:</strong> {festival.eventStartDate}
+                </Typography>
+                <Typography variant="body1" gutterBottom sx={{ fontSize: '1.1rem', mb: 2 }}>
+                  <strong>종료일:</strong> {festival.eventEndDate}
+                </Typography>
+                <Typography variant="body1" gutterBottom sx={{ fontSize: '1.1rem', mb: 2 }}>
+                  <strong>전화번호:</strong> {festival.tel}
+                </Typography>
+              </Box>
+
+              {/* 카카오맵 섹션 */}
+              {festival.mapx && festival.mapy && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
+                    축제 위치
+                  </Typography>
+                  <KakaoMap
+                    mapx={festival.mapx}
+                    mapy={festival.mapy}
+                    title={festival.title}
+                  />
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    위도: {festival.mapy}, 경도: {festival.mapx}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    href={`https://map.kakao.com/link/map/${festival.title},${festival.mapy},${festival.mapx}`}
+                    target="_blank"
+                    sx={{ mt: 2 }}
+                  >
+                    카카오맵에서 보기
+                  </Button>
+                </Box>
+              )}
+
+              {/* 상세 설명 섹션 */}
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h6" gutterBottom>
+                  상세 설명
+                </Typography>
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    lineHeight: 1.8,
+                    whiteSpace: 'pre-line' // 줄바꿈 보존
+                  }}
+                >
+                  {festival.description || '상세 설명이 없습니다.'}
+                </Typography>
+              </Box>
             </CardContent>
           </Card>
         )
