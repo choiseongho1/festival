@@ -26,7 +26,7 @@ public class FestivalController {
 
     @GetMapping
     public ResponseEntity<Page<FestivalListDto>> getFestivalList(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 9) Pageable pageable) {
         return ResponseEntity.ok(festivalService.getFestivalList(pageable));
     }
 

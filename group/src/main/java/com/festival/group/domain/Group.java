@@ -1,22 +1,21 @@
 package com.festival.group.domain;
 
-import com.festival.group.common.domain.BaseDomain;
-import jakarta.persistence.*;
 import lombok.*;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "groups")
+@Document(collection = "groups")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group extends BaseDomain {
+public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String groupName;            // 그룹 이름
@@ -24,12 +23,7 @@ public class Group extends BaseDomain {
     private String festivalId;           // 축제 ID
     private int maxMembers;              // 그룹의 최대 인원수
 
-    @ElementCollection
-    @CollectionTable(
-        name = "group_members",
-        joinColumns = @JoinColumn(name = "group_id")
-    )
-    @Column(name = "member_id")
+    @Builder.Default
     private List<String> members = new ArrayList<>();    // 그룹 멤버 ID 목록
 
     /**

@@ -35,10 +35,11 @@ dependencies {
 	// Lombok test 의존성 수정
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
 	// JPA 추가
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'mysql:mysql-connector-java:8.0.33'
-	// Kafka 추가
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'mysql:mysql-connector-java:8.0.33'
+//	 Kafka 추가
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	// TestContainers 의존성 추가

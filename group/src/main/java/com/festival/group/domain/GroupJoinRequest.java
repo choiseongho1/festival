@@ -1,12 +1,10 @@
 package com.festival.group.domain;
 
-import com.festival.group.common.domain.BaseDomain;
 import com.festival.group.enums.JoinRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,10 +13,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupJoinRequest extends BaseDomain {
+public class GroupJoinRequest {
     
     @Id
-    private ObjectId id;            // MongoDB ObjectId
+    private Long id;            // MongoDB ObjectId
     
     private Long groupId;           // 참가 요청한 그룹 ID
     private String userId;          // 요청한 사용자 ID
